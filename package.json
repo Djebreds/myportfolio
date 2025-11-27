@@ -18,6 +18,7 @@
     "@next/env": "^15.0.3",
     "@next/font": "^14.2.15",
     "@next/third-parties": "^15.0.3",
+    "@opennextjs/cloudflare": "^1.13.1",
     "@react-three/drei": "^9.117.0",
     "@react-three/fiber": "^9.0.0-alpha.8",
     "@tabler/icons-react": "^3.22.0",
@@ -47,6 +48,7 @@
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.51.0"
   }
 }
