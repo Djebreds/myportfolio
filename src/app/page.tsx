@@ -36,25 +36,93 @@ const sections = [
 ];
 
 export default async function Home() {
+  // Fetch WakaTime data (error handling is in the API functions)
   const wakaTime = await getWakaTimeData();
   const wakaTimeWeek = await getWakaTimeWeek();
 
-  const githubStats = await getGithubClient.getClient().query<IGitHubStats>({
-    query: GET_GH_STATS,
-    variables: { login: process.env.GITHUB_USERNAME },
-  });
+  // Fetch GitHub stats with error handling
+  let githubStats;
+  try {
+    githubStats = await getGithubClient.getClient().query<IGitHubStats>({
+      query: GET_GH_STATS,
+      variables: { login: process.env.GITHUB_USERNAME },
+    });
+  } catch (error) {
+    console.error('GitHub API error:', error);
+    // Provide fallback data for GitHub stats
+    githubStats = {
+      data: {
+        user: {
+          contributionsCollection: {
+            totalCommitContributions: 0,
+          },
+          repositoriesContributedTo: {
+            totalCount: 0,
+          },
+          pullRequests: {
+            totalCount: 0,
+          },
+          openIssues: {
+            totalCount: 0,
+          },
+          closedIssues: {
+            totalCount: 0,
+          },
+          repositories: {
+            totalCount: 0,
+            nodes: [],
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
+          },
+        },
+      },
+    };
+  }
 
   const currentYear = new Date().getFullYear();
 
-  const leetCodeStats = await getLeetCodeClient
-    .getClient()
-    .query<ISolvedProblems>({
-      query: GET_LEET_SOLVED_PROBLEMS,
-      variables: {
-        username: process.env.LEETCODE_USERNAME,
-        year: currentYear,
+  // Fetch LeetCode stats with error handling
+  let leetCodeStats;
+  try {
+    leetCodeStats = await getLeetCodeClient
+      .getClient()
+      .query<ISolvedProblems>({
+        query: GET_LEET_SOLVED_PROBLEMS,
+        variables: {
+          username: process.env.LEETCODE_USERNAME,
+          year: currentYear,
+        },
+      });
+  } catch (error) {
+    console.error('LeetCode API error:', error);
+    // Provide fallback data for LeetCode stats
+    leetCodeStats = {
+      data: {
+        matchedUser: {
+          username: process.env.LEETCODE_USERNAME || 'user',
+          submitStatsGlobal: {
+            acSubmissionNum: [
+              { difficulty: 'Easy', count: 0 },
+              { difficulty: 'Medium', count: 0 },
+              { difficulty: 'Hard', count: 0 },
+            ],
+          },
+          problemsSolvedBeatsStats: [
+            { difficulty: 'Easy', percentage: 0 },
+            { difficulty: 'Medium', percentage: 0 },
+            { difficulty: 'Hard', percentage: 0 },
+          ],
+        },
+        allQuestionsCount: [
+          { difficulty: 'Easy', count: 0 },
+          { difficulty: 'Medium', count: 0 },
+          { difficulty: 'Hard', count: 0 },
+        ],
       },
-    });
+    };
+  }
 
   return (
     <>
