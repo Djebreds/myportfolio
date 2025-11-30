@@ -2,7 +2,7 @@ import { type MetadataRoute } from 'next';
 
 const sitemap = (): MetadataRoute.Sitemap => [
   {
-    url: 'https://refifauzan.my.id',
+    url: 'https://djebreds.com',
     lastModified: new Date(),
     changeFrequency: 'monthly',
     priority: 1,
